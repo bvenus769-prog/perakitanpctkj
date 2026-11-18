@@ -1119,7 +1119,7 @@ function create(container,cb){
     function put(key,on){var p=P[key];if(on)placeInstalled(p);else placeHome(p)}
     put('cpu',S.cpu);put('cooler',S.cooler);put('ssd',S.ssd);put('vga',S.vga);
     put('io',S.io);put('psu',S.psu);put('c24',S.c24);put('c8',S.c8);put('fp',S.fp);
-    placeHome(P.paste);
+    placeHome(P.paste);P.paste.used=!!S.paste;P.paste.root.visible=!S.paste;
     var idx=[];S.ram.forEach(function(v,i){if(v)idx.push(i)});
     put('ram0',idx.length>0);put('ram1',idx.length>1);
     if(idx.length>0)P.ram0.root.position.x=DIMM_X[idx[0]];
@@ -1159,7 +1159,7 @@ function create(container,cb){
             tw(.6,function(k){
               p.root.position.lerpVectors(f2,hv,k);p.root.position.y+=Math.sin(k*Math.PI)*8*(1-k);
               p.root.quaternion.copy(q2).slerp(p.home.quat,k)
-            },function(){p.loc='home';p.noFollow=false;setGlow(p,false);finish()});
+            },function(){p.loc='home';p.used=true;p.root.visible=false;p.noFollow=false;setGlow(p,false);finish()});
           });
         });
       });
@@ -1292,7 +1292,7 @@ function create(container,cb){
   /* ===== Pointer ===== */
   var ray=new T.Raycaster(),mouse=new T.Vector2();
   function setMouse(e){var r=canvas.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;ray.setFromCamera(mouse,camera)}
-  function selectable(p){return p.loc==='home'||(p.key==='mobo'&&p.loc==='bench')}
+  function selectable(p){if(p.key==='paste'&&p.used)return false;return p.loc==='home'||(p.key==='mobo'&&p.loc==='bench')}
   function pickPart(e){
     setMouse(e);var roots=[];
     Object.keys(P).forEach(function(k){if(selectable(P[k]))roots.push(P[k].root)});
@@ -1372,8 +1372,8 @@ function create(container,cb){
     dockOrder=DEFS.map(function(d){return d.key}).sort(function(a,b){return idx(a)-idx(b)});
   };
   function isCable(p){return p.key==='c24'||p.key==='c8'||p.key==='fp'}
-  /* Kabel (24-pin, CPU 8-pin, Front Panel) selalu diam di meja, tidak pernah ikut rak samping */
-  function isDocked(p){return dockOn&&!isCable(p)}
+  /* Rak samping hanya aktif setelah motherboard terpasang di casing; sebelum itu semua komponen berjajar di meja. Kabel (24-pin, CPU 8-pin, Front Panel) selalu diam di meja. */
+  function isDocked(p){return dockOn&&!isCable(p)&&!(p.key==='paste'&&p.used)&&P.mobo.loc==='case'}
   function updateDock(dt){
     var k=1-Math.exp(-dt*11);
     var fwd=controls.target.clone().sub(camera.position);var dist=Math.max(fwd.length(),1);fwd.normalize();
@@ -1439,7 +1439,7 @@ function create(container,cb){
     });
     Object.keys(P).forEach(function(k){
       var p=P[k];
-      var show=labelsOn&&!isDocked(p)&&p.loc==='home'&&p!==selPart&&!dragging;
+      var show=labelsOn&&!isDocked(p)&&p.loc==='home'&&p!==selPart&&!dragging&&p.root.visible;
       p.label.visible=show;
       if(show){p.label.position.set(p.root.position.x,p.home.top+2.6,p.root.position.z)}
     });
@@ -2302,7 +2302,7 @@ function App(){
       <main className="main" role="tabpanel">
         ${tab==='materi'?html`<${Materi} prog=${prog} setProg=${setProg}/>`:html`<${Sim} dark=${dark} profile=${profile} setProfile=${setProfile} history=${history} setHistory=${setHistory}/>`}
       </main>
-      <div className="foot">Dibuat untuk siswa SMK TJKT. Data progres dan riwayat hanya tersimpan di perangkat ini. Versi 3.6 (layar penuh praktik, sentuh otomatis).</div>
+      <div className="foot">Dibuat untuk siswa SMK TJKT. Data progres dan riwayat hanya tersimpan di perangkat ini. Versi 3.9 (thermal paste hilang setelah dipakai).</div>
     </div>
     ${instOpen?html`<${InstallModal} onClose=${function(){setInstOpen(false)}}/>`:null}
   </div>`;

@@ -19,6 +19,17 @@ python3 -m http.server 8080
 
 Membuka `index.html` langsung (file://) tetap bisa dipakai, tetapi tanpa mode offline/instal.
 
+
+## Cara unggah ke GitHub (penting)
+
+GitHub **tidak mengekstrak file .zip** secara otomatis. Jika file `.zip` diunggah apa adanya, situs tidak akan berubah.
+
+1. Ekstrak zip. Hasilnya adalah file dan folder langsung (`index.html`, `sw.js`, `manifest.webmanifest`, `versi.txt`, dan seterusnya), bukan di dalam folder lain.
+2. Di repositori GitHub: **Add file > Upload files**, lalu seret **semua isi** hasil ekstrak (bukan file zip-nya). Pastikan `index.html` berada di **akar** repositori, bukan di dalam subfolder.
+3. Jika ada berkas lama dengan nama sama, GitHub akan menimpanya. Klik **Commit changes**.
+4. Folder tersembunyi `.github` dan berkas `.nojekyll` sering tidak ikut terseret. Jika begitu, di **Settings > Pages** pilih **Deploy from a branch**, branch `main`, folder `/ (root)`. Cara ini tidak membutuhkan folder `.github`.
+5. Tunggu 1 sampai 2 menit, lalu buka `https://NAMA.github.io/REPO/versi.txt`. Isinya harus sama dengan versi di bagian bawah aplikasi. Jika masih versi lama, tekan muat ulang keras (Ctrl+Shift+R) atau hapus data situs di browser.
+
 ## Deploy ke GitHub Pages
 
 1. Buat repositori baru di GitHub, lalu unggah seluruh isi folder ini (termasuk folder `.github`).
@@ -47,4 +58,4 @@ Buka alamat Pages sekali dengan internet. Service worker menyimpan berkas aplika
 1. **Pastikan berkas yang diunggah benar.** Versi 3D adalah `index.html` di paket ini. Hapus berkas lama dari repositori, yaitu `perakitpc-tjkt.html` dan `sw.js` versi lama (versi 2D), lalu ganti dengan isi paket ini. Cek: buka `index.html` di GitHub dan cari teks `three.min.js`. Jika ada, itu versi 3D.
 2. **Tunggu deployment selesai.** Lihat tab **Actions** di repositori sampai tanda centang hijau. Pages bisa butuh 1 sampai 2 menit.
 3. **Bersihkan cache browser.** Service worker lama bisa menyajikan versi 2D dari cache. Di Chrome: tekan F12, tab **Application**, **Service Workers**, klik **Unregister**, lalu **Storage**, **Clear site data**, dan muat ulang. Di HP: hapus data situs atau hapus aplikasi yang sudah diinstal, lalu buka lagi.
-4. **Verifikasi:** di bagian bawah halaman harus tertulis **Versi 3.6 (layar penuh praktik, sentuh otomatis)** dan tombol "Zoom In (+)" terlihat di simulasi.
+4. **Verifikasi:** di bagian bawah halaman harus tertulis **Versi 3.9 (thermal paste hilang setelah dipakai)** dan tombol "Zoom In (+)" terlihat di simulasi.

@@ -1,8 +1,8 @@
-/* Service worker PerakitPC TJKT (v3).
+/* Service worker PerakitPC TJKT (v3.9).
    - Halaman (index.html): jaringan dahulu, cache sebagai cadangan offline. Versi baru langsung tampil saat online.
    - Aset lain (React, Three.js, ikon): cache dahulu, diperbarui di latar belakang.
    Cache versi lama (v1/v2, termasuk versi 2D) dihapus saat aktivasi. */
-var C='perakitpc-tjkt-v3';
+var C='perakitpc-tjkt-v3.9';
 var CORE=['./','./index.html','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 var CDN=[
   'https://cdn.tailwindcss.com/3.4.17',
